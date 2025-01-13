@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement Prediction</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+            text-align: center;
+        }
+        input {
+            margin: 10px;
+            padding: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <script>
+        function calculateTotalScore() {
+            // Get the values from the input fields
+            var cgpa = parseFloat(document.getElementsByName("cgpa")[0].value);
+            var project_score = parseFloat(document.getElementsByName("project_score")[0].value);
+            var internships = parseFloat(document.getElementsByName("internships")[0].value);
+            var extracurricular_score = parseFloat(document.getElementsByName("extracurricular_score")[0].value);
+
+            // Apply the formula for total score calculation
+            if (!isNaN(cgpa) && !isNaN(project_score) && !isNaN(internships) && !isNaN(extracurricular_score)) {
+                var total_score = (cgpa * 4) + (project_score * 2) + (internships * 1.5) + (extracurricular_score * 1);
+                
+                // Set the calculated total score in the input field
+                document.getElementsByName("total_score")[0].value = total_score.toFixed(2);
+            } else {
+                // Reset the total score if any of the inputs are not valid numbers
+                document.getElementsByName("total_score")[0].value = '';
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Placement Prediction</h1>
+    <form action="/predict" method="post">
+        <label>CGPA:</label><br>
+        <input type="text" name="cgpa" required oninput="calculateTotalScore()"><br>
+
+        <label>Project Score:</label><br>
+        <input type="text" name="project_score" required oninput="calculateTotalScore()"><br>
+
+        <label>Internships:</label><br>
+        <input type="text" name="internships" required oninput="calculateTotalScore()"><br>
+
+        <label>Extracurricular Score:</label><br>
+        <input type="text" name="extracurricular_score" required oninput="calculateTotalScore()"><br>
+
+        <label>Total Score:</label><br>
+        <input type="text" name="total_score" required readonly><br>
+
+        <label>Department (0: CS, 1: ECE, 2: Mech, 3: Civil, 4: Electrical):</label><br>
+        <input type="text" name="department" required><br>
+
+        <label>Field (0: IT, 1: Non-IT):</label><br>
+        <input type="text" name="field" required><br>
+
+        <button type="submit">Predict</button>
+    </form>
+    
+    {% if prediction %}
+    <h2>Prediction: {{ prediction }}</h2>
+    <p>Probability: {{ probability }}%</p>
+    {% endif %}
+
+    {% if error %}
+    <h2 style="color: red;">Error: {{ error }}</h2>
+    {% endif %}
+</body>
+</html>
